@@ -1,5 +1,8 @@
 package core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BinarySearchTree {
     public Node root = null;
 
@@ -52,6 +55,20 @@ public class BinarySearchTree {
         postOrderTraversal(root);
     }
 
+    public List<Node> toArrayList(Node root, List<Node> list){
+        if (list == null){
+            list = new ArrayList<>();
+        }
+
+        if (root == null){
+            return list;
+        } else {
+            list.add(root);
+            toArrayList(root.left, list);
+            toArrayList(root.right, list);
+        }
+        return list;
+    }
     public void inOrderTraversal(Node root) {
         if (root == null) {
             return;
@@ -81,6 +98,10 @@ public class BinarySearchTree {
             postOrderTraversal(root.right);
             System.out.print(root.value + " ");
         }
+    }
+
+    public void printTree() {
+        this.root.printTree();
     }
 
 }
