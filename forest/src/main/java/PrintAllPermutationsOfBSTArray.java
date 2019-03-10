@@ -12,32 +12,44 @@ import java.util.List;
  */
 public class PrintAllPermutationsOfBSTArray {
     public static void main(String args[]){
+        /** Multiple arrays for test cases **/
         int[] arr1= {50, 20, 60, 10, 25, 70, 5, 15, 65, 80};
         int[] arr3 = {50, 60, 20, 10, 70, 80, 15, 25, 65, 5};
         int[] arr = {2, 1, 3};
         int[] arr4 = {3, 1, 2, 4, 5};
 
         BinarySearchTree binarySearchTree = new BinarySearchTree();
-        BinarySearchTree binarySearchTree2 = new BinarySearchTree();
 
 
         for (int i: arr4){
             binarySearchTree.insertNode(i);
         }
 
-        for (int i: arr3){
-            binarySearchTree2.insertNode(i);
-        }
-
         binarySearchTree.printTree();
-//        binarySearchTree2.printTree();
+        List<List<Integer>> permutations = findAllPermutations(binarySearchTree.root, null);
 
-        List<Node> list = binarySearchTree.toArrayList(binarySearchTree.root, null);
-        List<List<Integer>> permutations = printAllPermutations(binarySearchTree.root, null);
-        System.out.print("asd");
+        printFormattedResult(permutations);
     }
 
-    private static List<List<Integer>> printAllPermutations(Node root, List<Node> queue) {
+    private static void printFormattedResult(List<List<Integer>> permutations) {
+        System.out.println();
+        for (List<Integer> list: permutations){
+            System.out.print("[");
+            int index = 0;
+            for (Integer integer: list){
+                System.out.print(integer.toString());
+                index++;
+
+                if(index < list.size()){
+                    System.out.print(", ");
+                }
+
+            }
+            System.out.println("]");
+        }
+    }
+
+    private static List<List<Integer>> findAllPermutations(Node root, List<Node> queue) {
         List<List<Integer>> result = new ArrayList<>();
         if (queue == null) {
             queue = new ArrayList<>();
@@ -58,7 +70,7 @@ public class PrintAllPermutationsOfBSTArray {
         for (int i=0; i < queue.size(); i++){
             List<Node> updatedQueue =  cloneList(queue);
             updatedQueue.remove(i);
-            for (List<Integer> r: printAllPermutations(queue.get(i), updatedQueue)){
+            for (List<Integer> r: findAllPermutations(queue.get(i), updatedQueue)){
                 r.add(0, root.value);
                 result.add(r);
             }
