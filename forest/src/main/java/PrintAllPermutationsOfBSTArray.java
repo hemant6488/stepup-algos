@@ -2,108 +2,82 @@ import core.BinarySearchTree;
 import core.Node;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 /**
+ * BST Sequences: A binary search tree was created by traversing through an array from left to right and inserting each
+ * element. Given a binary search tree with distinct elements, print all possible arrays that could have led to this tree.
+ *
  * Created by hemantkumar on 05/03/19.
  */
 public class PrintAllPermutationsOfBSTArray {
     public static void main(String args[]){
         int[] arr1= {50, 20, 60, 10, 25, 70, 5, 15, 65, 80};
+        int[] arr3 = {50, 60, 20, 10, 70, 80, 15, 25, 65, 5};
         int[] arr = {2, 1, 3};
+        int[] arr4 = {3, 1, 2, 4, 5};
 
         BinarySearchTree binarySearchTree = new BinarySearchTree();
+        BinarySearchTree binarySearchTree2 = new BinarySearchTree();
 
 
-        for (int i: arr){
+        for (int i: arr4){
             binarySearchTree.insertNode(i);
         }
+
+        for (int i: arr3){
+            binarySearchTree2.insertNode(i);
+        }
+
         binarySearchTree.printTree();
+//        binarySearchTree2.printTree();
+
         List<Node> list = binarySearchTree.toArrayList(binarySearchTree.root, null);
-        List<List<Integer>> permutations = printAllPermutations(list);
+        List<List<Integer>> permutations = printAllPermutations(binarySearchTree.root, null);
         System.out.print("asd");
     }
 
-    private static List<List<Integer>> printAllPermutations(List<Node> list) {
-        List<Node> queue = new ArrayList<>();
+    private static List<List<Integer>> printAllPermutations(Node root, List<Node> queue) {
         List<List<Integer>> result = new ArrayList<>();
+        if (queue == null) {
+            queue = new ArrayList<>();
+        }
+        if (root.right != null) {
+            queue.add(root.right);
+        }
+        if (root.left != null) {
+            queue.add(root.left);
+        }
 
-        for (int i = 0; i < list.size(); i++){
-            queue.add(list.get(i));
-            Node currentNode = queue.get(0);
-            queue.remove(0);
-            if (currentNode.left != null) {
-                queue.add(currentNode.left);
-            }
-            if (currentNode.right != null) {
-                queue.add(currentNode.right);
-            }
+        if (queue.size() == 0){
+            List<Integer> r = new ArrayList<>();
+            r.add(root.value);
+            result.add(r);
+        }
 
-
-            if (queue.size() > 0){
-                for (List<Integer> r: printAllPermutations(queue)){
-                    r.add(0, currentNode.value);
-                    result.add(r);
-                }
-            } else {
-                List<Integer> r = new ArrayList<>();
-                r.add(currentNode.value);
+        for (int i=0; i < queue.size(); i++){
+            List<Node> updatedQueue =  cloneList(queue);
+            updatedQueue.remove(i);
+            for (List<Integer> r: printAllPermutations(queue.get(i), updatedQueue)){
+                r.add(0, root.value);
                 result.add(r);
             }
         }
-        return result;
-    }
 
-    private static List<List<Integer>> getPermutationsForNode(Node currentNode) {
-        List<List<Integer>> result = new ArrayList<>();
-        List<List<Integer>> leftSubtree = null;
-        List<List<Integer>> rightSubtree = null;
-
-        if (currentNode.left != null) {
-            leftSubtree = getPermutationsForNode(currentNode.left);
-            for (List<Integer> list: leftSubtree){
-                list.add(0, currentNode.value);
-            }
-        }
-        if (currentNode.right != null) {
-            rightSubtree = getPermutationsForNode(currentNode.right);
-            for (List<Integer> list: rightSubtree){
-                list.add(0, currentNode.value);
-            }
-        }
-
-        if (currentNode.left == null && currentNode.right == null){
-            List<Integer> list = new ArrayList<>();
-            list.add(currentNode.value);
-            result.add(list);
-        }
-
-        if (leftSubtree != null && leftSubtree.size() != 0){
-            if (rightSubtree != null && rightSubtree.size() != 0) {
-                for (List<Integer> list : leftSubtree) {
-                    for (List<Integer> right: rightSubtree){
-                        list.addAll(right);
-                        result.add(list);
-                    }
-                }
-            } else {
-                result.addAll(leftSubtree);
-            }
-        } else {
-            if (rightSubtree != null && rightSubtree.size() != 0){
-                result.addAll(rightSubtree);
-            }
+        if (queue.size() != 0){
+            queue.remove(0);
         }
 
         return result;
     }
 
-    private static List<Integer> cloneList(List<Integer> list){
-        List<Integer> newArrayList = new ArrayList<>();
+    private static List<Node> cloneList(List<Node> list){
+        if (list.size() == 0){
+            return null;
+        }
+        List<Node> newArrayList = new ArrayList<>();
 
-        for (Integer s: list){
+        for (Node s: list){
             newArrayList.add(s);
         }
 
